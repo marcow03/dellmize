@@ -20,10 +20,11 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
+    "@bjorn3/browser_wasi_shim": "^0.4.2",
     "@mantine/core": "8.2.5",
     "@mantine/hooks": "8.2.5",
     "@next/bundle-analyzer": "^15.3.3",
-    "@tabler/icons-react": "^3.34.0",
+    "@tabler/icons-react": "^3.34.1",
     "next": "15.3.3",
     "react": "19.1.0",
     "react-dom": "19.1.0"
