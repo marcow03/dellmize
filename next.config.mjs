@@ -1,6 +1,4 @@
-import { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+export default {
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,
@@ -10,5 +8,3 @@ const nextConfig: NextConfig = {
   },
   output: 'export',
 };
-
-export default nextConfig;
