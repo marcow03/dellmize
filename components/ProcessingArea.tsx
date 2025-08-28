@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
 import {
   ActionIcon,
@@ -112,8 +112,8 @@ export function ProcessingArea() {
 
   return (
     <Container fluid mih={500}>
-      <Flex justify="space-evenly" align="center" direction="row" wrap={'wrap'} gap="lg">
-        <Container m={0} p={0}>
+      <Flex justify="center" align="center" gap={'xl'} wrap="wrap">
+        <div>
           <Textarea
             label="Input"
             placeholder="Paste your **MARKDOWN** text here"
@@ -125,48 +125,50 @@ export function ProcessingArea() {
             value={input}
             onChange={(event) => setInput(event.currentTarget.value)}
           />
-        </Container>
-        <Stack>
-          <Switch
-            checked={refinementOptions.replaceDoubleS}
-            onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
-            label="Replace 'ß' with 'ss'"
-          />
-          <Switch
-            checked={refinementOptions.replaceEmDash}
-            onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
-            label="Replace '—' with '-'"
-          />
-          <Switch
-            checked={refinementOptions.removeEmojis}
-            onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
-            label="Remove emojis"
-          />
-          <Switch
-            checked={refinementOptions.removeHorizontalRules}
-            onChange={(e) => handleOptionChange('removeHorizontalRules', e.currentTarget.checked)}
-            label="Remove horizonal rules"
-          />
-          <Switch
-            checked={refinementOptions.reduceBold}
-            onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
-            label="Reduce amount of bold text"
-          />
-          <Switch
-            checked={refinementOptions.reduceItalic}
-            onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
-            label="Reduce amount of cursive text"
-          />
-          <Select
-            label="Output Format"
-            value={outputFormat}
-            data={availableOutputFormats}
-            maxDropdownHeight={100}
-            searchable
-            onChange={(value) => value && setOutputFormat(value)}
-          />
-        </Stack>
-        <Container pos={'relative'} m={0} p={0}>
+        </div>
+        <div>
+          <Stack>
+            <Switch
+              checked={refinementOptions.replaceDoubleS}
+              onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
+              label="Replace 'ß' with 'ss'"
+            />
+            <Switch
+              checked={refinementOptions.replaceEmDash}
+              onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
+              label="Replace '—' with '-'"
+            />
+            <Switch
+              checked={refinementOptions.removeEmojis}
+              onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
+              label="Remove emojis"
+            />
+            <Switch
+              checked={refinementOptions.removeHorizontalRules}
+              onChange={(e) => handleOptionChange('removeHorizontalRules', e.currentTarget.checked)}
+              label="Remove horizonal rules"
+            />
+            <Switch
+              checked={refinementOptions.reduceBold}
+              onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
+              label="Reduce amount of bold text"
+            />
+            <Switch
+              checked={refinementOptions.reduceItalic}
+              onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
+              label="Reduce amount of cursive text"
+            />
+            <Select
+              label="Output Format"
+              value={outputFormat}
+              data={availableOutputFormats}
+              maxDropdownHeight={100}
+              searchable
+              onChange={(value) => value && setOutputFormat(value)}
+            />
+          </Stack>
+        </div>
+        <div style={{ position: 'relative' }}>
           <Textarea
             label="Output"
             placeholder="Processed text will appear here"
@@ -178,7 +180,7 @@ export function ProcessingArea() {
             value={output}
             readOnly
           />
-          <Container pos={'absolute'} top={35} right={10} m={0} p={0}>
+          <div style={{ position: 'absolute', top: 35, right: 10 }}>
             <CopyButton value={output} timeout={2000}>
               {({ copied, copy }) => (
                 <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow position="right">
@@ -188,8 +190,8 @@ export function ProcessingArea() {
                 </Tooltip>
               )}
             </CopyButton>
-          </Container>
-        </Container>
+          </div>
+        </div>
       </Flex>
     </Container>
   );

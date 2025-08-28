@@ -61,10 +61,10 @@ export async function initPandoc() {
     memoryDataView().setUint32(argv + 4 * i, arg, true);
   }
   memoryDataView().setUint32(argv + 4 * args.length, 0, true);
-  const argv_ptr = wasmInstance.exports.malloc(4);
-  memoryDataView().setUint32(argv_ptr, argv, true);
+  const argvPtr = wasmInstance.exports.malloc(4);
+  memoryDataView().setUint32(argvPtr, argv, true);
 
-  wasmInstance.exports.hs_init_with_rtsopts(argcPtr, argv_ptr);
+  wasmInstance.exports.hs_init_with_rtsopts(argcPtr, argvPtr);
 
   return function pandoc(args: string, input: string): string {
     const argsPtr = wasmInstance.exports.malloc(args.length);
