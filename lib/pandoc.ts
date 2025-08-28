@@ -36,7 +36,7 @@ export async function initPandoc() {
   ];
   const options = { debug: false };
   const wasi = new WASI(args, env, fds, options);
-  const { instance } = await WebAssembly.instantiateStreaming(fetch('/pandoc.wasm'), {
+  const { instance } = await WebAssembly.instantiateStreaming(fetch('pandoc.wasm'), {
     wasi_snapshot_preview1: wasi.wasiImport,
   });
   const wasmInstance = instance as unknown as PandocWasmInstance;
