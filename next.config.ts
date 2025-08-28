@@ -9,10 +9,6 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   },
   output: 'export',
-  basePath: "/dellmize",
-  images: {
-    unoptimized: true,
-  },
 };
 
 export default nextConfig;

@@ -113,14 +113,14 @@ export function ProcessingArea() {
   return (
     <Container fluid mih={500}>
       <Flex justify="space-evenly" align="center" direction="row" wrap={'wrap'} gap="lg">
-        <Container w={'40%'} m={0} p={0}>
+        <Container m={0} p={0}>
           <Textarea
             label="Input"
             placeholder="Paste your **MARKDOWN** text here"
             size="md"
             autosize
-            minRows={20}
-            maxRows={20}
+            minRows={18}
+            maxRows={18}
             miw={500}
             value={input}
             onChange={(event) => setInput(event.currentTarget.value)}
@@ -166,14 +166,14 @@ export function ProcessingArea() {
             onChange={(value) => value && setOutputFormat(value)}
           />
         </Stack>
-        <Container pos={'relative'} w={'40%'} m={0} p={0}>
+        <Container pos={'relative'} m={0} p={0}>
           <Textarea
             label="Output"
             placeholder="Processed text will appear here"
             size="md"
             autosize
-            minRows={20}
-            maxRows={20}
+            minRows={18}
+            maxRows={18}
             miw={500}
             value={output}
             readOnly
