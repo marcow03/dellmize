@@ -3,15 +3,14 @@ import { initPandoc } from './pandoc';
 
 export class PandocExporter implements TextExporter {
   private inputFormat: string = 'markdown';
-  private outputFormat: string = 'typst';
-  private options: string[] = [];
+  private outputFormat: string = 'markdown';
   private pandoc: ((args: string, input: string) => string) | null = null;
 
   async initialize() {
     this.pandoc = await initPandoc();
   }
 
-  setOutputFormat(format: string){
+  setOutputFormat(format: string) {
     this.outputFormat = format;
   }
 
