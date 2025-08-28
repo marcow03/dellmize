@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
 import {
   ActionIcon,
@@ -23,75 +23,92 @@ import { EmojisProcessor } from '@/lib/processors/emojis-processor';
 import { HorizontalRulesProcessor } from '@/lib/processors/horizontal-rules-processor';
 import { ItalicProcessor } from '@/lib/processors/italic-processor';
 
-export function ProcessingArea() {
-  const [output, setOutput] = useState<string>('');
-  const [input, setInput] = useState<string>('');
-  const [replaceDoubleS, setReplaceDoubleS] = useState<boolean>(true);
-  const [replaceEmDash, setReplaceEmDash] = useState<boolean>(true);
-  const [removeEmojis, setRemoveEmojis] = useState<boolean>(true);
-  const [removeHorizontalRules, setRemoveHorizontalRules] = useState<boolean>(true);
-  const [reduceItalic, setReduceItalic] = useState<boolean>(false);
-  const [reduceBold, setReduceBold] = useState<boolean>(false);
-  const [outputFormat, setOutputFormat] = useState<string>('markdown');
+const availableOutputFormats = [
+  { value: 'markdown', label: 'Markdown' },
+  { value: 'typst', label: 'Typst' },
+  { value: 'latex', label: 'LaTeX' },
+  { value: 'html', label: 'HTML' },
+  { value: 'asciidoc', label: 'AsciiDoc' },
+  { value: 'rst', label: 'ReStructuredText' },
+  { value: 'rtf', label: 'Rich Text Format' },
+  { value: 'man', label: 'Manpage' },
+];
+
+const processorMap = {
+  replaceDoubleS: DoubleSProcessor,
+  replaceEmDash: EmDashProcessor,
+  reduceBold: BoldProcessor,
+  reduceItalic: ItalicProcessor,
+  removeHorizontalRules: HorizontalRulesProcessor,
+  removeEmojis: EmojisProcessor,
+};
+
+function usePandocExporter() {
   const [exporter, setExporter] = useState<TextExporter | null>(null);
 
-  const availableOutputFormats = [
-    { value: 'markdown', label: 'Markdown' },
-    { value: 'typst', label: 'Typst' },
-    { value: 'latex', label: 'LaTeX' },
-    { value: 'html', label: 'HTML' },
-    { value: 'asciidoc', label: 'AsciiDoc' },
-    { value: 'rst', label: 'ReStructuredText' },
-    { value: 'rtf', label: 'Rich Text Format' },
-    { value: 'man', label: 'Manpage' },
-  ];
-  let timeout: NodeJS.Timeout;
-  const TIMEOUT_MS = 250;
+  useEffect(() => {
+    async function initializeExporter() {
+      const pandocExporter = new PandocExporter();
+      await pandocExporter.initialize();
+      setExporter(pandocExporter);
+    }
+    initializeExporter();
+  }, []);
 
-  async function setupPandocExporter() {
-    const exporter = new PandocExporter();
-    await exporter.initialize();
-    setExporter(exporter);
-  }
+  return exporter;
+}
 
-  function processInput() {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
+export function ProcessingArea() {
+  const [input, setInput] = useState<string>('');
+  const [output, setOutput] = useState<string>('');
+  const [outputFormat, setOutputFormat] = useState<string>('markdown');
+
+  const [refinementOptions, setRefinementOptions] = useState({
+    replaceDoubleS: true,
+    replaceEmDash: true,
+    removeEmojis: true,
+    removeHorizontalRules: true,
+    reduceItalic: false,
+    reduceBold: true,
+  });
+
+  const exporter = usePandocExporter();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const refineAndExportText = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
       if (exporter) {
         exporter.setOutputFormat(outputFormat);
         const refiner = new MarkdownRefiner();
 
-        if (replaceDoubleS) refiner.addProcessor(new DoubleSProcessor());
-        if (replaceEmDash) refiner.addProcessor(new EmDashProcessor());
-        if (reduceBold) refiner.addProcessor(new BoldProcessor());
-        if (reduceItalic) refiner.addProcessor(new ItalicProcessor());
-        if (removeHorizontalRules) refiner.addProcessor(new HorizontalRulesProcessor());
-        if (removeEmojis) refiner.addProcessor(new EmojisProcessor());
+        Object.entries(refinementOptions).forEach(([option, isEnabled]) => {
+          if (isEnabled && processorMap[option as keyof typeof processorMap]) {
+            const ProcessorClass = processorMap[option as keyof typeof processorMap];
+            refiner.addProcessor(new ProcessorClass());
+          }
+        });
 
         refiner.setExporter(exporter);
-
         const converted = refiner.refine(input);
         setOutput(converted);
       }
-    }, TIMEOUT_MS);
-  }
+    }, 250);
+  }, [input, outputFormat, refinementOptions, exporter]);
 
   useEffect(() => {
-    setupPandocExporter();
-  }, []);
+    refineAndExportText();
+  }, [refineAndExportText]);
 
-  useEffect(() => {
-    processInput();
-  }, [
-    outputFormat,
-    input,
-    replaceDoubleS,
-    replaceEmDash,
-    reduceBold,
-    reduceItalic,
-    removeEmojis,
-    removeHorizontalRules,
-  ]);
+  const handleOptionChange = (option: keyof typeof refinementOptions, checked: boolean) => {
+    setRefinementOptions((prevOptions) => ({
+      ...prevOptions,
+      [option]: checked,
+    }));
+  };
 
   return (
     <Container fluid mih={500}>
@@ -111,33 +128,33 @@ export function ProcessingArea() {
         </Container>
         <Stack>
           <Switch
-            checked={replaceDoubleS}
-            onChange={(e) => setReplaceDoubleS(e.currentTarget.checked)}
+            checked={refinementOptions.replaceDoubleS}
+            onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
             label="Replace 'ß' with 'ss'"
           />
           <Switch
-            checked={replaceEmDash}
-            onChange={(e) => setReplaceEmDash(e.currentTarget.checked)}
+            checked={refinementOptions.replaceEmDash}
+            onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
             label="Replace '—' with '-'"
           />
           <Switch
-            checked={removeEmojis}
-            onChange={(e) => setRemoveEmojis(e.currentTarget.checked)}
+            checked={refinementOptions.removeEmojis}
+            onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
             label="Remove emojis"
           />
           <Switch
-            checked={removeHorizontalRules}
-            onChange={(e) => setRemoveHorizontalRules(e.currentTarget.checked)}
+            checked={refinementOptions.removeHorizontalRules}
+            onChange={(e) => handleOptionChange('removeHorizontalRules', e.currentTarget.checked)}
             label="Remove horizonal rules"
           />
           <Switch
-            checked={reduceBold}
-            onChange={(e) => setReduceBold(e.currentTarget.checked)}
+            checked={refinementOptions.reduceBold}
+            onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
             label="Reduce amount of bold text"
           />
           <Switch
-            checked={reduceItalic}
-            onChange={(e) => setReduceItalic(e.currentTarget.checked)}
+            checked={refinementOptions.reduceItalic}
+            onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
             label="Reduce amount of cursive text"
           />
           <Select
@@ -147,7 +164,7 @@ export function ProcessingArea() {
             maxDropdownHeight={100}
             searchable
             onChange={(value) => value && setOutputFormat(value)}
-          ></Select>
+          />
         </Stack>
         <Container pos={'relative'} w={'40%'} m={0} p={0}>
           <Textarea
@@ -159,6 +176,7 @@ export function ProcessingArea() {
             maxRows={20}
             miw={500}
             value={output}
+            readOnly
           />
           <Container pos={'absolute'} top={35} right={10} m={0} p={0}>
             <CopyButton value={output} timeout={2000}>
