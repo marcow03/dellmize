@@ -12,6 +12,6 @@ DeLLMize is a lightweight web app that lets you paste in Markdown text, removes 
 
 ## Preview
 
-<img src="./assets/hero.png" style="border-radius: 5px" alt="Hero Image" width="800"/>
+<img src="./assets/hero.png" style="border-radius: 5px; border: 1px solid #d1d1d1" alt="Hero Image" width="800"/>
 
 [Try it out!](https://marcow03.github.io/dellmize)

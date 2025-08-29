@@ -14,7 +14,7 @@ export function Home() {
           <ThemeToggle />
         </Flex>
       </AppShell.Header>
-      <AppShell.Main pt={100}>
+      <AppShell.Main pt={100} pb={100}>
         <ProcessingArea />
       </AppShell.Main>
       <AppShell.Footer p="md">

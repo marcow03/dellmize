@@ -4,10 +4,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
 import {
   ActionIcon,
+  Center,
   Container,
   CopyButton,
-  Flex,
   Select,
+  SimpleGrid,
   Stack,
   Switch,
   Textarea,
@@ -68,7 +69,7 @@ export function ProcessingArea() {
     replaceEmDash: true,
     removeEmojis: true,
     removeHorizontalRules: true,
-    reduceItalic: false,
+    reduceItalic: true,
     reduceBold: true,
   });
 
@@ -112,8 +113,8 @@ export function ProcessingArea() {
 
   return (
     <Container fluid mih={500}>
-      <Flex justify="center" align="center" gap={'xl'} wrap="wrap">
-        <div>
+      <SimpleGrid cols={{ base: 1, md: 3 }}>
+        <div style={{ flex: 1, minWidth: 300 }}>
           <Textarea
             label="Input"
             placeholder="Paste your **MARKDOWN** text here"
@@ -121,54 +122,57 @@ export function ProcessingArea() {
             autosize
             minRows={18}
             maxRows={18}
-            miw={500}
             value={input}
             onChange={(event) => setInput(event.currentTarget.value)}
           />
         </div>
-        <div>
-          <Stack>
-            <Switch
-              checked={refinementOptions.replaceDoubleS}
-              onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
-              label="Replace 'ß' with 'ss'"
-            />
-            <Switch
-              checked={refinementOptions.replaceEmDash}
-              onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
-              label="Replace '—' with '-'"
-            />
-            <Switch
-              checked={refinementOptions.removeEmojis}
-              onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
-              label="Remove emojis"
-            />
-            <Switch
-              checked={refinementOptions.removeHorizontalRules}
-              onChange={(e) => handleOptionChange('removeHorizontalRules', e.currentTarget.checked)}
-              label="Remove horizonal rules"
-            />
-            <Switch
-              checked={refinementOptions.reduceBold}
-              onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
-              label="Reduce amount of bold text"
-            />
-            <Switch
-              checked={refinementOptions.reduceItalic}
-              onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
-              label="Reduce amount of cursive text"
-            />
-            <Select
-              label="Output Format"
-              value={outputFormat}
-              data={availableOutputFormats}
-              maxDropdownHeight={100}
-              searchable
-              onChange={(value) => value && setOutputFormat(value)}
-            />
-          </Stack>
-        </div>
-        <div style={{ position: 'relative' }}>
+        <Center>
+          <div style={{ minWidth: 200, maxWidth: 250 }}>
+            <Stack>
+              <Switch
+                checked={refinementOptions.replaceDoubleS}
+                onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
+                label="Replace 'ß' with 'ss'"
+              />
+              <Switch
+                checked={refinementOptions.replaceEmDash}
+                onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
+                label="Replace '—' with ','"
+              />
+              <Switch
+                checked={refinementOptions.removeEmojis}
+                onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
+                label="Remove emojis"
+              />
+              <Switch
+                checked={refinementOptions.removeHorizontalRules}
+                onChange={(e) =>
+                  handleOptionChange('removeHorizontalRules', e.currentTarget.checked)
+                }
+                label="Remove horizonal rules"
+              />
+              <Switch
+                checked={refinementOptions.reduceBold}
+                onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
+                label="Reduce amount of bold text"
+              />
+              <Switch
+                checked={refinementOptions.reduceItalic}
+                onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
+                label="Reduce amount of italic text"
+              />
+              <Select
+                label="Output Format"
+                value={outputFormat}
+                data={availableOutputFormats}
+                maxDropdownHeight={100}
+                searchable
+                onChange={(value) => value && setOutputFormat(value)}
+              />
+            </Stack>
+          </div>
+        </Center>
+        <div style={{ position: 'relative', flex: 1, minWidth: 300 }}>
           <Textarea
             label="Output"
             placeholder="Processed text will appear here"
@@ -176,7 +180,6 @@ export function ProcessingArea() {
             autosize
             minRows={18}
             maxRows={18}
-            miw={500}
             value={output}
             readOnly
           />
@@ -192,7 +195,7 @@ export function ProcessingArea() {
             </CopyButton>
           </div>
         </div>
-      </Flex>
+      </SimpleGrid>
     </Container>
   );
 }
