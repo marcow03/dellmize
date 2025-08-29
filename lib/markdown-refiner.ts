@@ -4,8 +4,6 @@ export class MarkdownRefiner implements Refiner {
   private processors: TextProcessor[] = [];
   private exporter: TextExporter | null = null;
 
-  constructor() {}
-
   addProcessor(p: TextProcessor): Refiner {
     this.processors.push(p);
     return this;
