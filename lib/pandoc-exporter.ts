@@ -15,9 +15,8 @@ export class PandocExporter implements TextExporter {
   }
 
   export(s: string): string {
-    if (this.inputFormat === this.outputFormat) {
-      return s;
-    }
+    if (this.inputFormat === this.outputFormat) return s;
+
     return this.pandoc!(`-f ${this.inputFormat} -t ${this.outputFormat}`, s);
   }
 }

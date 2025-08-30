@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "npm run eslint",
-    "eslint": "next lint",
+    "lint": "next lint",
     "prettier:check": "prettier --check \"**/*.{ts,tsx}\"",
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\""
   },
@@ -41,6 +40,5 @@
     "prettier": "^3.5.3",
     "typescript": "5.8.3",
     "typescript-eslint": "^8.34.0"
-  },
-  "packageManager": "yarn@4.9.3"
+  }
 }
