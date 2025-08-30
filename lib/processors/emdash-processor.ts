@@ -1,7 +1,7 @@
-import { TextProcessor } from "../interfaces";
+import { TextProcessor } from '../interfaces';
 
 export class EmDashProcessor implements TextProcessor {
-    process(s: string): string {
-        return s.replace(/ — /g, ', ');
-    }
+  process(s: string): string {
+    return s.replace(/ — /g, ', ');
+  }
 }

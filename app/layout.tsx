@@ -5,8 +5,8 @@ import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/c
 import { theme } from '../theme';
 
 export const metadata = {
-  title: "DeLLMize",
-  description: "Refine LLM outputs automagically.",
+  title: 'DeLLMize',
+  description: 'Refine LLM outputs automagically.',
 };
 
 export default function RootLayout({ children }: { children: any }) {

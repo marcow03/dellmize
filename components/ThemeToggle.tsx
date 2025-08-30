@@ -7,7 +7,7 @@ export function ThemeToggle() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   return (
-    <ThemeIcon variant='light' size={40} radius={'md'}>
+    <ThemeIcon variant="light" size={40} radius={'md'}>
       {colorScheme === 'light' ? (
         <IconMoonStars onClick={() => setColorScheme('dark')} />
       ) : (

@@ -85,10 +85,13 @@ export function ProcessingArea() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const clipboard = useClipboard();
-  useHotkeys([
-    ['shift+ctrl+c', () => clipboard.copy(output)],
-    ['shift+ctrl+v', () => getClipboardContents().then((text) => text && setInput(text))],
-  ], []);
+  useHotkeys(
+    [
+      ['shift+ctrl+c', () => clipboard.copy(output)],
+      ['shift+ctrl+v', () => getClipboardContents().then((text) => text && setInput(text))],
+    ],
+    []
+  );
 
   const refineAndExportText = useCallback(() => {
     if (timeoutRef.current) {

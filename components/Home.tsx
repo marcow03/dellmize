@@ -19,7 +19,7 @@ export function Home() {
       </AppShell.Main>
       <AppShell.Footer p="md">
         <Flex justify="space-between" align="center">
-          <div style={{textAlign: 'start'}}>© 2025 DeLLMize</div>
+          <div style={{ textAlign: 'start' }}>© 2025 DeLLMize</div>
           <div>
             <ThemeIcon variant="default" radius={'xl'} size={40}>
               <a
