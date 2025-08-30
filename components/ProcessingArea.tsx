@@ -6,14 +6,14 @@ import {
   ActionIcon,
   Center,
   Container,
-  CopyButton,
+  Grid,
   Select,
-  SimpleGrid,
   Stack,
   Switch,
   Textarea,
   Tooltip,
 } from '@mantine/core';
+import { useClipboard, useHotkeys } from '@mantine/hooks';
 import { TextExporter } from '@/lib/interfaces';
 import { MarkdownRefiner } from '@/lib/markdown-refiner';
 import { PandocExporter } from '@/lib/pandoc-exporter';
@@ -59,6 +59,14 @@ function usePandocExporter() {
   return exporter;
 }
 
+async function getClipboardContents() {
+  try {
+    return await navigator.clipboard.readText();
+  } catch (err) {
+    console.error('Failed to read clipboard contents: ', err);
+  }
+}
+
 export function ProcessingArea() {
   const [input, setInput] = useState<string>('');
   const [output, setOutput] = useState<string>('');
@@ -75,6 +83,12 @@ export function ProcessingArea() {
 
   const exporter = usePandocExporter();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clipboard = useClipboard();
+  useHotkeys([
+    ['shift+ctrl+c', () => clipboard.copy(output)],
+    ['shift+ctrl+v', () => getClipboardContents().then((text) => text && setInput(text))],
+  ], []);
 
   const refineAndExportText = useCallback(() => {
     if (timeoutRef.current) {
@@ -113,89 +127,95 @@ export function ProcessingArea() {
 
   return (
     <Container fluid mih={500}>
-      <SimpleGrid cols={{ base: 1, md: 3 }}>
-        <div style={{ flex: 1, minWidth: 300 }}>
-          <Textarea
-            label="Input"
-            placeholder="Paste your **MARKDOWN** text here"
-            size="md"
-            autosize
-            minRows={18}
-            maxRows={18}
-            value={input}
-            onChange={(event) => setInput(event.currentTarget.value)}
-          />
-        </div>
-        <Center>
-          <div style={{ minWidth: 200, maxWidth: 250 }}>
-            <Stack>
-              <Switch
-                checked={refinementOptions.replaceDoubleS}
-                onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
-                label="Replace 'ß' with 'ss'"
-              />
-              <Switch
-                checked={refinementOptions.replaceEmDash}
-                onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
-                label="Replace '—' with ','"
-              />
-              <Switch
-                checked={refinementOptions.removeEmojis}
-                onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
-                label="Remove emojis"
-              />
-              <Switch
-                checked={refinementOptions.removeHorizontalRules}
-                onChange={(e) =>
-                  handleOptionChange('removeHorizontalRules', e.currentTarget.checked)
-                }
-                label="Remove horizonal rules"
-              />
-              <Switch
-                checked={refinementOptions.reduceBold}
-                onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
-                label="Reduce amount of bold text"
-              />
-              <Switch
-                checked={refinementOptions.reduceItalic}
-                onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
-                label="Reduce amount of italic text"
-              />
-              <Select
-                label="Output Format"
-                value={outputFormat}
-                data={availableOutputFormats}
-                maxDropdownHeight={100}
-                searchable
-                onChange={(value) => value && setOutputFormat(value)}
-              />
-            </Stack>
+      <Grid>
+        <Grid.Col span={{ base: 12, md: 'auto' }}>
+          <div>
+            <Textarea
+              label="Input"
+              placeholder="Paste your **MARKDOWN** text here"
+              size="md"
+              autosize
+              minRows={18}
+              maxRows={18}
+              value={input}
+              onChange={(event) => setInput(event.currentTarget.value)}
+            />
           </div>
-        </Center>
-        <div style={{ position: 'relative', flex: 1, minWidth: 300 }}>
-          <Textarea
-            label="Output"
-            placeholder="Processed text will appear here"
-            size="md"
-            autosize
-            minRows={18}
-            maxRows={18}
-            value={output}
-            readOnly
-          />
-          <div style={{ position: 'absolute', top: 35, right: 10 }}>
-            <CopyButton value={output} timeout={2000}>
-              {({ copied, copy }) => (
-                <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow position="right">
-                  <ActionIcon color={copied ? 'teal' : 'gray'} variant="subtle" onClick={copy}>
-                    {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
-                  </ActionIcon>
-                </Tooltip>
-              )}
-            </CopyButton>
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 'content' }}>
+          <Center h={'100%'} m={'md'}>
+            <div>
+              <Stack>
+                <Switch
+                  checked={refinementOptions.replaceDoubleS}
+                  onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
+                  label="Replace 'ß' with 'ss'"
+                />
+                <Switch
+                  checked={refinementOptions.replaceEmDash}
+                  onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
+                  label="Replace '—' with ','"
+                />
+                <Switch
+                  checked={refinementOptions.removeEmojis}
+                  onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
+                  label="Remove emojis"
+                />
+                <Switch
+                  checked={refinementOptions.removeHorizontalRules}
+                  onChange={(e) =>
+                    handleOptionChange('removeHorizontalRules', e.currentTarget.checked)
+                  }
+                  label="Remove horizonal rules"
+                />
+                <Switch
+                  checked={refinementOptions.reduceBold}
+                  onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
+                  label="Reduce amount of bold text"
+                />
+                <Switch
+                  checked={refinementOptions.reduceItalic}
+                  onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
+                  label="Reduce amount of italic text"
+                />
+                <Select
+                  label="Output Format"
+                  value={outputFormat}
+                  data={availableOutputFormats}
+                  maxDropdownHeight={100}
+                  searchable
+                  onChange={(value) => value && setOutputFormat(value)}
+                />
+              </Stack>
+            </div>
+          </Center>
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 'auto' }}>
+          <div style={{ position: 'relative' }}>
+            <Textarea
+              label="Output"
+              placeholder="Processed text will appear here"
+              size="md"
+              autosize
+              minRows={18}
+              maxRows={18}
+              value={output}
+              readOnly
+            />
+            <div style={{ position: 'absolute', top: 35, right: 10 }}>
+              <Tooltip label={clipboard.copied ? 'Copied' : 'Copy'} withArrow position="right">
+                <ActionIcon
+                  color={clipboard.copied ? 'teal' : 'gray'}
+                  variant="white"
+                  onClick={() => clipboard.copy(output)}
+                >
+                  {clipboard.copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                </ActionIcon>
+              </Tooltip>
+            </div>
           </div>
-        </div>
-      </SimpleGrid>
+        </Grid.Col>
+      </Grid>
     </Container>
   );
 }
