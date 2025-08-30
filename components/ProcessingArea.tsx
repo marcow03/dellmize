@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
 import {
-  ActionIcon,
+  Button,
   Center,
   Container,
   Grid,
@@ -132,65 +132,61 @@ export function ProcessingArea() {
     <Container fluid mih={500}>
       <Grid>
         <Grid.Col span={{ base: 12, md: 'auto' }}>
-          <div>
-            <Textarea
-              label="Input"
-              placeholder="Paste your **MARKDOWN** text here"
-              size="md"
-              autosize
-              minRows={18}
-              maxRows={18}
-              value={input}
-              onChange={(event) => setInput(event.currentTarget.value)}
-            />
-          </div>
+          <Textarea
+            label="Input"
+            placeholder="Paste your **MARKDOWN** text here"
+            size="md"
+            autosize
+            minRows={18}
+            maxRows={18}
+            value={input}
+            onChange={(event) => setInput(event.currentTarget.value)}
+          />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 'content' }}>
           <Center h={'100%'} m={'md'}>
-            <div>
-              <Stack>
-                <Switch
-                  checked={refinementOptions.replaceDoubleS}
-                  onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
-                  label="Replace 'ß' with 'ss'"
-                />
-                <Switch
-                  checked={refinementOptions.replaceEmDash}
-                  onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
-                  label="Replace '—' with ','"
-                />
-                <Switch
-                  checked={refinementOptions.removeEmojis}
-                  onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
-                  label="Remove emojis"
-                />
-                <Switch
-                  checked={refinementOptions.removeHorizontalRules}
-                  onChange={(e) =>
-                    handleOptionChange('removeHorizontalRules', e.currentTarget.checked)
-                  }
-                  label="Remove horizonal rules"
-                />
-                <Switch
-                  checked={refinementOptions.reduceBold}
-                  onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
-                  label="Reduce amount of bold text"
-                />
-                <Switch
-                  checked={refinementOptions.reduceItalic}
-                  onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
-                  label="Reduce amount of italic text"
-                />
-                <Select
-                  label="Output Format"
-                  value={outputFormat}
-                  data={availableOutputFormats}
-                  maxDropdownHeight={100}
-                  searchable
-                  onChange={(value) => value && setOutputFormat(value)}
-                />
-              </Stack>
-            </div>
+            <Stack>
+              <Switch
+                checked={refinementOptions.replaceDoubleS}
+                onChange={(e) => handleOptionChange('replaceDoubleS', e.currentTarget.checked)}
+                label="Replace 'ß' with 'ss'"
+              />
+              <Switch
+                checked={refinementOptions.replaceEmDash}
+                onChange={(e) => handleOptionChange('replaceEmDash', e.currentTarget.checked)}
+                label="Replace '—' with ','"
+              />
+              <Switch
+                checked={refinementOptions.removeEmojis}
+                onChange={(e) => handleOptionChange('removeEmojis', e.currentTarget.checked)}
+                label="Remove emojis"
+              />
+              <Switch
+                checked={refinementOptions.removeHorizontalRules}
+                onChange={(e) =>
+                  handleOptionChange('removeHorizontalRules', e.currentTarget.checked)
+                }
+                label="Remove horizonal rules"
+              />
+              <Switch
+                checked={refinementOptions.reduceBold}
+                onChange={(e) => handleOptionChange('reduceBold', e.currentTarget.checked)}
+                label="Reduce amount of bold text"
+              />
+              <Switch
+                checked={refinementOptions.reduceItalic}
+                onChange={(e) => handleOptionChange('reduceItalic', e.currentTarget.checked)}
+                label="Reduce amount of italic text"
+              />
+              <Select
+                label="Output Format"
+                value={outputFormat}
+                data={availableOutputFormats}
+                maxDropdownHeight={120}
+                searchable
+                onChange={(value) => value && setOutputFormat(value)}
+              />
+            </Stack>
           </Center>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 'auto' }}>
@@ -207,13 +203,14 @@ export function ProcessingArea() {
             />
             <div style={{ position: 'absolute', top: 35, right: 10 }}>
               <Tooltip label={clipboard.copied ? 'Copied' : 'Copy'} withArrow position="right">
-                <ActionIcon
+                <Button
+                  variant="light"
+                  size="xs"
                   color={clipboard.copied ? 'teal' : 'gray'}
-                  variant="white"
                   onClick={() => clipboard.copy(output)}
                 >
                   {clipboard.copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
-                </ActionIcon>
+                </Button>
               </Tooltip>
             </div>
           </div>
