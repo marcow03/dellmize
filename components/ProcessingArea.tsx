@@ -76,11 +76,22 @@ function getWordCount(text: string) {
     .filter((word) => word.length > 0).length;
 }
 
+function getCharCountWithSpaces(text: string): number {
+  return text.length;
+}
+
+function getCharCountWithoutSpaces(text: string): number {
+  return text.replace(/\s+/g, "").length;
+}
+
+
 export function ProcessingArea() {
   const [input, setInput] = useState<string>('');
   const [output, setOutput] = useState<string>('');
   const [outputFormat, setOutputFormat] = useState<string>('markdown');
   const [wordCount, setWordCount] = useState<number>(0);
+  const [countWithSpaces, setCountWithSpaces] = useState<number>(0);
+  const [countWithoutSpaces, setCountWithoutSpaces] = useState<number>(0);
 
   const [refinementOptions, setRefinementOptions] = useState({
     replaceDoubleS: true,
@@ -124,6 +135,8 @@ export function ProcessingArea() {
         const converted = refiner.refine(input);
         setOutput(converted);
         setWordCount(getWordCount(input));
+        setCountWithSpaces(getCharCountWithSpaces(input));
+        setCountWithoutSpaces(getCharCountWithoutSpaces(input));
       }
     }, 250);
   }, [input, outputFormat, refinementOptions, exporter]);
@@ -225,7 +238,11 @@ export function ProcessingArea() {
               </Tooltip>
             </div>
             <Flex justify="flex-end" mt={5} mr={5}>
-              <Text size={'xs'}>Word Count: {wordCount}</Text>
+              <div>
+                <Text size={'xs'}>Word Count: {wordCount}</Text>
+                <Text size={'xs'}>Character Count (without spaces): {countWithoutSpaces}</Text>
+                <Text size={'xs'}>Character Count (with spaces): {countWithSpaces}</Text>
+              </div>
             </Flex>
           </div>
         </Grid.Col>
