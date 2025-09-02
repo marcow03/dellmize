@@ -23,6 +23,7 @@ import { BoldProcessor } from '@/lib/processors/bold-processor';
 import { DoubleSProcessor } from '@/lib/processors/double-s-processor';
 import { EmDashProcessor } from '@/lib/processors/emdash-processor';
 import { EmojisProcessor } from '@/lib/processors/emojis-processor';
+import { CitationProcessor } from '@/lib/processors/citation-processor';
 import { HorizontalRulesProcessor } from '@/lib/processors/horizontal-rules-processor';
 import { ItalicProcessor } from '@/lib/processors/italic-processor';
 
@@ -34,6 +35,7 @@ const availableOutputFormats = [
   { value: 'asciidoc', label: 'AsciiDoc' },
   { value: 'rst', label: 'ReStructuredText' },
   { value: 'rtf', label: 'Rich Text Format' },
+  { value: 'plain', label: 'Plain Text' },
   { value: 'man', label: 'Manpage' },
 ];
 
@@ -44,6 +46,7 @@ const processorMap = {
   reduceItalic: ItalicProcessor,
   removeHorizontalRules: HorizontalRulesProcessor,
   removeEmojis: EmojisProcessor,
+  citationProcessor: CitationProcessor,
 };
 
 function usePandocExporter() {
@@ -81,9 +84,8 @@ function getCharCountWithSpaces(text: string): number {
 }
 
 function getCharCountWithoutSpaces(text: string): number {
-  return text.replace(/\s+/g, "").length;
+  return text.replace(/\s+/g, '').length;
 }
-
 
 export function ProcessingArea() {
   const [input, setInput] = useState<string>('');
@@ -100,6 +102,7 @@ export function ProcessingArea() {
     removeHorizontalRules: true,
     reduceItalic: true,
     reduceBold: true,
+    citationProcessor: true,
   });
 
   const exporter = usePandocExporter();
