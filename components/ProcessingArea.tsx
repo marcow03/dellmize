@@ -6,10 +6,12 @@ import {
   Button,
   Center,
   Container,
+  Flex,
   Grid,
   Select,
   Stack,
   Switch,
+  Text,
   Textarea,
   Tooltip,
 } from '@mantine/core';
@@ -67,10 +69,18 @@ async function getClipboardContents() {
   }
 }
 
+function getWordCount(text: string) {
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+}
+
 export function ProcessingArea() {
   const [input, setInput] = useState<string>('');
   const [output, setOutput] = useState<string>('');
   const [outputFormat, setOutputFormat] = useState<string>('markdown');
+  const [wordCount, setWordCount] = useState<number>(0);
 
   const [refinementOptions, setRefinementOptions] = useState({
     replaceDoubleS: true,
@@ -113,6 +123,7 @@ export function ProcessingArea() {
         refiner.setExporter(exporter);
         const converted = refiner.refine(input);
         setOutput(converted);
+        setWordCount(getWordCount(input));
       }
     }, 250);
   }, [input, outputFormat, refinementOptions, exporter]);
@@ -213,6 +224,9 @@ export function ProcessingArea() {
                 </Button>
               </Tooltip>
             </div>
+            <Flex justify="flex-end" mt={5} mr={5}>
+              <Text size={'xs'}>Word Count: {wordCount}</Text>
+            </Flex>
           </div>
         </Grid.Col>
       </Grid>
