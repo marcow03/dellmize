@@ -8,6 +8,7 @@ import {
   Container,
   Flex,
   Grid,
+  Group,
   Select,
   Stack,
   Switch,
@@ -20,10 +21,10 @@ import { TextExporter } from '@/lib/interfaces';
 import { MarkdownRefiner } from '@/lib/markdown-refiner';
 import { PandocExporter } from '@/lib/pandoc-exporter';
 import { BoldProcessor } from '@/lib/processors/bold-processor';
+import { CitationProcessor } from '@/lib/processors/citation-processor';
 import { DoubleSProcessor } from '@/lib/processors/double-s-processor';
 import { EmDashProcessor } from '@/lib/processors/emdash-processor';
 import { EmojisProcessor } from '@/lib/processors/emojis-processor';
-import { CitationProcessor } from '@/lib/processors/citation-processor';
 import { HorizontalRulesProcessor } from '@/lib/processors/horizontal-rules-processor';
 import { ItalicProcessor } from '@/lib/processors/italic-processor';
 
@@ -240,12 +241,18 @@ export function ProcessingArea() {
                 </Button>
               </Tooltip>
             </div>
-            <Flex justify="flex-end" mt={5} mr={5}>
-              <div>
-                <Text size={'xs'}>Word Count: {wordCount}</Text>
-                <Text size={'xs'}>Character Count (without spaces): {countWithoutSpaces}</Text>
-                <Text size={'xs'}>Character Count (with spaces): {countWithSpaces}</Text>
-              </div>
+            <Flex justify={'center'} mt={5} mr={5}>
+              <Group grow preventGrowOverflow={false} wrap="nowrap">
+                <Text size={'xs'} c={'gray'}>
+                  Word Count: <b>{wordCount}</b>
+                </Text>
+                <Text size={'xs'} c={'gray'}>
+                  Character Count (without spaces): <b>{countWithoutSpaces}</b>
+                </Text>
+                <Text size={'xs'} c={'gray'}>
+                  Character Count (with spaces): <b>{countWithSpaces}</b>
+                </Text>
+              </Group>
             </Flex>
           </div>
         </Grid.Col>
