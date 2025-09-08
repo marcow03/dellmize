@@ -8,6 +8,7 @@ import {
   Container,
   Flex,
   Grid,
+  Group,
   Select,
   Stack,
   Switch,
@@ -20,6 +21,7 @@ import { TextExporter } from '@/lib/interfaces';
 import { MarkdownRefiner } from '@/lib/markdown-refiner';
 import { PandocExporter } from '@/lib/pandoc-exporter';
 import { BoldProcessor } from '@/lib/processors/bold-processor';
+import { CitationProcessor } from '@/lib/processors/citation-processor';
 import { DoubleSProcessor } from '@/lib/processors/double-s-processor';
 import { EmDashProcessor } from '@/lib/processors/emdash-processor';
 import { EmojisProcessor } from '@/lib/processors/emojis-processor';
@@ -34,6 +36,7 @@ const availableOutputFormats = [
   { value: 'asciidoc', label: 'AsciiDoc' },
   { value: 'rst', label: 'ReStructuredText' },
   { value: 'rtf', label: 'Rich Text Format' },
+  { value: 'plain', label: 'Plain Text' },
   { value: 'man', label: 'Manpage' },
 ];
 
@@ -44,6 +47,7 @@ const processorMap = {
   reduceItalic: ItalicProcessor,
   removeHorizontalRules: HorizontalRulesProcessor,
   removeEmojis: EmojisProcessor,
+  citationProcessor: CitationProcessor,
 };
 
 function usePandocExporter() {
@@ -81,10 +85,16 @@ function getCharCountWithSpaces(text: string): number {
 }
 
 function getCharCountWithoutSpaces(text: string): number {
+<<<<<<< HEAD
   return text.replace(/\s+/g, "").length;
 }
 
 
+=======
+  return text.replace(/\s+/g, '').length;
+}
+
+>>>>>>> 1b50fc2bd54d2d3810c30b0d903a67c844177bab
 export function ProcessingArea() {
   const [input, setInput] = useState<string>('');
   const [output, setOutput] = useState<string>('');
@@ -100,6 +110,7 @@ export function ProcessingArea() {
     removeHorizontalRules: true,
     reduceItalic: true,
     reduceBold: true,
+    citationProcessor: true,
   });
 
   const exporter = usePandocExporter();
@@ -237,12 +248,27 @@ export function ProcessingArea() {
                 </Button>
               </Tooltip>
             </div>
+<<<<<<< HEAD
             <Flex justify="flex-end" mt={5} mr={5}>
               <div>
                 <Text size={'xs'}>Word Count: {wordCount}</Text>
                 <Text size={'xs'}>Character Count (without spaces): {countWithoutSpaces}</Text>
                 <Text size={'xs'}>Character Count (with spaces): {countWithSpaces}</Text>
               </div>
+=======
+            <Flex justify={'center'} mt={5} mr={5}>
+              <Group grow preventGrowOverflow={false} wrap="nowrap">
+                <Text size={'xs'} c={'gray'}>
+                  Word Count: <b>{wordCount}</b>
+                </Text>
+                <Text size={'xs'} c={'gray'}>
+                  Character Count (without spaces): <b>{countWithoutSpaces}</b>
+                </Text>
+                <Text size={'xs'} c={'gray'}>
+                  Character Count (with spaces): <b>{countWithSpaces}</b>
+                </Text>
+              </Group>
+>>>>>>> 1b50fc2bd54d2d3810c30b0d903a67c844177bab
             </Flex>
           </div>
         </Grid.Col>
